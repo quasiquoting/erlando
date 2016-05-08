@@ -24,6 +24,9 @@
 -behaviour(monad_plus).
 -export([mzero/0, mplus/2]).
 
+-behaviour(functor).
+-export([fmap/2, '<$'/2]).
+
 -type maybe(A) :: {just, A} | nothing.
 
 
@@ -47,3 +50,12 @@ mzero() -> nothing.
 -spec mplus(maybe(A), maybe(A)) -> maybe(A).
 mplus(nothing, Y) -> Y;
 mplus(X,      _Y) -> X.
+
+
+-spec fmap(fun((A) -> B), maybe(A)) -> maybe(B).
+fmap( Fun, {just, X}) -> return(Fun(X));
+fmap(_Fun, nothing)   -> nothing.
+
+
+-spec '<$'(A, maybe(B)) -> maybe(A) when B :: any().
+'<$'(X, Y) -> functor:'<$'(maybe_m, X, Y).
